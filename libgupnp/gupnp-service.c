@@ -391,6 +391,49 @@ gupnp_service_action_get_valist (GUPnPServiceAction *action,
 }
 
 /**
+ * gupnp_service_action_get_values:
+ * @action: A #GUPnPServiceAction
+ * @arg_names: (element-type utf8) : A #GList of argument names as string
+ * @arg_types: (element-type GType): A #GList of argument types as #GType
+ *
+ * A variant of #gupnp_service_action_get that uses #GList instead of varargs.
+ *
+ * Return value: (element-type GValue) (transfer full): The values as #GList of
+ * #GValue. #g_list_free the returned list and #g_value_unset and #g_slice_free
+ * each element.
+ **/
+GList *
+gupnp_service_action_get_values (GUPnPServiceAction *action,
+                                 GList              *arg_names,
+                                 GList              *arg_types)
+{
+        GList *arg_values;
+        int i;
+
+        g_return_val_if_fail (action != NULL, NULL);
+
+        arg_values = NULL;
+
+        for (i = 0; i < g_list_length (arg_names); i++) {
+                const char *arg_name;
+                GType arg_type;
+                GValue *arg_value;
+
+                arg_name = (const char *) g_list_nth_data (arg_names, i);
+                arg_type = (GType) g_list_nth_data (arg_types, i);
+
+                arg_value = g_slice_new0 (GValue);
+                g_value_init (arg_value, arg_type);
+
+                gupnp_service_action_get_value (action, arg_name, arg_value);
+
+                arg_values = g_list_append (arg_values, arg_value);
+        }
+
+        return arg_values;
+}
+
+/**
  * gupnp_service_action_get_value: (skip)
  * @action: A #GUPnPServiceAction
  * @argument: The name of the argument to retrieve
