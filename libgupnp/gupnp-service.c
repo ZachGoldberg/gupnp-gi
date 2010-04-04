@@ -391,7 +391,7 @@ gupnp_service_action_get_valist (GUPnPServiceAction *action,
 }
 
 /**
- * gupnp_service_action_get_value
+ * gupnp_service_action_get_value: (skip)
  * @action: A #GUPnPServiceAction
  * @argument: The name of the argument to retrieve
  * @value: The #GValue to store the value of the argument, initialized
@@ -426,6 +426,33 @@ gupnp_service_action_get_value (GUPnPServiceAction *action,
                            argument,
                            action->name);
 }
+
+/**
+ * gupnp_service_action_get_value_gvalue:
+ * @action: A #GUPnPServiceAction
+ * @argument: The name of the argument to retrieve
+ * @type: The type of #GValue to create
+ *
+ * Rename To: gupnp_service_action_get_value
+ * Retrieves the value of @argument into a GValue of type @type and returns it.
+ * The method exists only and only to satify PyGI, please use
+ * #gupnp_service_action_get_value and ignore this if possible.
+ **/
+GValue*
+gupnp_service_action_get_value_gvalue (GUPnPServiceAction *action,
+                                 const char         *argument,
+                                 GType               type)
+{
+        GValue *val;
+
+        val = g_slice_new0 (GValue);
+        g_value_init (val, type);
+
+        gupnp_service_action_get_value (action, argument, val);
+
+        return val;
+}
+
 
 /**
  * gupnp_service_action_set
