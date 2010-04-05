@@ -142,6 +142,11 @@ gupnp_service_action_set_valist   (GUPnPServiceAction *action,
                                    va_list             var_args);
 
 void
+gupnp_service_action_set_values   (GUPnPServiceAction *action,
+                                   GList              *arguments,
+                                   GList              *values);
+
+void
 gupnp_service_action_set_value    (GUPnPServiceAction *action,
                                    const char         *argument,
                                    const GValue       *value);

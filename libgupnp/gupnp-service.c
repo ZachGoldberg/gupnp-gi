@@ -564,6 +564,47 @@ gupnp_service_action_set_valist (GUPnPServiceAction *action,
 }
 
 /**
+ * gupnp_service_action_set_values:
+ * @action: A #GUPnPServiceAction
+ * @arguments: (element-type utf8) (transfer-none) : A #GList of names of values
+ * @values: (element-type GValue) (transfer-none) : The #GValues to store the
+ * return value
+ *
+ * Sets the value of @arguments to @values.
+ **/
+void
+gupnp_service_action_set_values (GUPnPServiceAction *action,
+                                 GList              *arguments,
+                                 GList              *values)
+{
+        g_return_if_fail (action != NULL);
+        g_return_if_fail (arguments != NULL);
+        g_return_if_fail (values != NULL);
+        g_return_if_fail (g_list_length(arguments) == g_list_length(values));
+
+        if (action->msg->status_code == SOUP_STATUS_INTERNAL_SERVER_ERROR) {
+                g_warning ("Calling gupnp_service_action_set_value() after "
+                           "having called gupnp_service_action_return_error() "
+                           "is not allowed.");
+
+                return;
+        }
+
+        /* Append to response */
+        for (; arguments; arguments = arguments->next) {
+                const char* argument = arguments->data;
+                GValue* value = values->data;
+
+                xml_util_start_element (action->response_str, argument);
+                gvalue_util_value_append_to_xml_string (value,
+                                                        action->response_str);
+                xml_util_end_element (action->response_str, argument);
+
+                values = values->next;
+        }
+}
+
+/**
  * gupnp_service_action_set_value
  * @action: A #GUPnPServiceAction
  * @argument: The name of the return value to retrieve
