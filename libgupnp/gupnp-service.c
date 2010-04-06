@@ -1315,7 +1315,7 @@ got_introspection (GUPnPServiceInfo *info,
         GUPnPService *service = user_data;
         const GList *state_variables, *l;
         GHashTableIter iter;
-        SubscriptionData *data;
+        gpointer data;
 
         if (introspection) {
                 state_variables =
